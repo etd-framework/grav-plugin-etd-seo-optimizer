@@ -2,6 +2,7 @@
 
 namespace Grav\Plugin;
 
+use Grav\Common\Page\Page;
 use Grav\Common\Plugin;
 use RocketTheme\Toolbox\Event\Event;
 
@@ -57,7 +58,7 @@ class EtdSeoOptimizerPlugin extends Plugin {
      */
     public function onPageContentRaw(Event $e) {
 
-        // Get a variable from the plugin configuration
+        // Get span class from the plugin configuration
         $span_class = $this->grav['config']->get('plugins.etd-seo-optimizer.span_class');
 
         // Filter to have a valid css class
@@ -65,13 +66,25 @@ class EtdSeoOptimizerPlugin extends Plugin {
             return;
         }
 
+        /**
+         * @var Page $page
+         */
+        $page = $e['page'];
+
         // Get the current raw content
-        $content = $e['page']->getRawContent();
+        $content = $page->getRawContent();
 
         // Replace special tags
-        $content = str_replace(['[SEO]', '[/SEO]'], ['<span class="' . htmlspecialchars($m[0]) . '">', '</span>'], $content);
+        $page->modifyHeader('title', $this->replace($page->title(), $m[0]));
+        $content = $this->replace($content, $m[0]);
 
         // Set the output with the special tags replaced
-        $e['page']->setRawContent($content);
+        $page->setRawContent($content);
+    }
+
+    protected function replace($str, $span_class) {
+
+        return str_replace(['[SEO]', '[/SEO]'], ['<span class="' . htmlspecialchars($span_class) . '">', '</span>'], $str);
+
     }
 }
