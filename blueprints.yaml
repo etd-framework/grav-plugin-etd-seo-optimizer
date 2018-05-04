@@ -1,0 +1,30 @@
+name: Etd S Seo Optimizer
+version: 0.1.0
+description: Replaces special tags [SEO][/SEO] in page
+icon: plug
+author:
+  name: ETD Solutions
+  email: contact@etd-solutions.com
+homepage: https://github.com/etd-framework/grav-plugin-etd-seo-optimizer
+demo: https://etd-solutions.com
+keywords: grav, plugin, seo
+bugs: https://github.com/etd-framework/grav-plugin-etd-seo-optimizer/issues
+docs: https://github.com/etd-framework/grav-plugin-etd-seo-optimizer/blob/develop/README.md
+license: MIT
+
+form:
+  validation: strict
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_ADMIN.PLUGIN_STATUS
+      highlight: 1
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+    span_class:
+      type: text
+      label: CSS Class to add to the span
