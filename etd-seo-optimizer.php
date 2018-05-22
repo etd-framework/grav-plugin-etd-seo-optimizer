@@ -2,6 +2,7 @@
 
 namespace Grav\Plugin;
 
+use Grav\Common\Page\Collection;
 use Grav\Common\Page\Page;
 use Grav\Common\Plugin;
 use RocketTheme\Toolbox\Event\Event;
@@ -46,17 +47,38 @@ class EtdSeoOptimizerPlugin extends Plugin {
 
         // Enable the main event we are interested in
         $this->enable([
-            'onPageContentRaw' => ['onPageContentRaw', 0]
+            'onPageContentRaw'      => ['onPageContentRaw', 0],
+            'onCollectionProcessed' => ['onCollectionProcessed', 0]
         ]);
     }
 
     /**
-     * Do some work for this event, full details of events can be found
-     * on the learn site: http://learn.getgrav.org/plugins/event-hooks
-     *
      * @param Event $e
      */
     public function onPageContentRaw(Event $e) {
+
+        $this->modifyPage($e['page']);
+    }
+
+    /**
+     * @param Event $e
+     */
+    public function onCollectionProcessed(Event $e) {
+
+        /**
+         * @var Collection $collection;
+         */
+        $collection = $e['collection'];
+
+        foreach ($collection as $page) {
+            $this->modifyPage($page);
+        }
+    }
+
+    /**
+     * @param Page $page
+     */
+    protected function modifyPage(Page $page) {
 
         // Get span class from the plugin configuration
         $span_class = $this->grav['config']->get('plugins.etd-seo-optimizer.span_class');
@@ -66,20 +88,21 @@ class EtdSeoOptimizerPlugin extends Plugin {
             return;
         }
 
-        /**
-         * @var Page $page
-         */
-        $page = $e['page'];
+        // Replace special tags in page header
+        $header = $page->header();
+        foreach ($header as $k => $v) {
+            $page->modifyHeader($k, $this->replace($v, $m[0]));
+        }
 
         // Get the current raw content
         $content = $page->getRawContent();
 
-        // Replace special tags
-        $page->modifyHeader('title', $this->replace($page->title(), $m[0]));
-        $content = $this->replace($content, $m[0]);
+        // Set the page content with the special tags replaced if content is set
+        if (isset($content)) {
+            $content = $this->replace($content, $m[0]);
+            $page->setRawContent($content);
+        }
 
-        // Set the output with the special tags replaced
-        $page->setRawContent($content);
     }
 
     protected function replace($str, $span_class) {

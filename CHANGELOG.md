@@ -1,11 +1,12 @@
-# 0.0.2
-##  04/05/2018
+# v0.2.0
+##  05/22/2018
 
 1. [](#new)
-    * Add special tags replacement in header title
+    * Tag replacement in collections with onCollectionProcessed event 
 
-# 0.0.1
-##  03/05/2018
+
+# v0.1.0
+##  05/03/2018
 
 1. [](#new)
     * Add special tags replacement
