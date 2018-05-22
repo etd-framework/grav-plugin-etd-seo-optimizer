@@ -70,8 +70,10 @@ class EtdSeoOptimizerPlugin extends Plugin {
          */
         $collection = $e['collection'];
 
-        foreach ($collection as $page) {
-            $this->modifyPage($page);
+        if ($collection->count() > 0) {
+            foreach ($collection as $page) {
+                $this->modifyPage($page);
+            }
         }
     }
 
@@ -90,8 +92,10 @@ class EtdSeoOptimizerPlugin extends Plugin {
 
         // Replace special tags in page header
         $header = $page->header();
-        foreach ($header as $k => $v) {
-            $page->modifyHeader($k, $this->replace($v, $m[0]));
+        if (isset($header)) {
+            foreach ($header as $k => $v) {
+                $page->modifyHeader($k, $this->replace($v, $m[0]));
+            }
         }
 
         // Get the current raw content
