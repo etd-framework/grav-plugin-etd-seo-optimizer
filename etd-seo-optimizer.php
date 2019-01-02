@@ -48,7 +48,8 @@ class EtdSeoOptimizerPlugin extends Plugin {
         // Enable the main event we are interested in
         $this->enable([
             'onPageContentRaw'      => ['onPageContentRaw', 0],
-            'onCollectionProcessed' => ['onCollectionProcessed', 0]
+            'onCollectionProcessed' => ['onCollectionProcessed', 0],
+            'onTwigExtensions'      => ['onTwigExtensions', 0]
         ]);
     }
 
@@ -75,6 +76,15 @@ class EtdSeoOptimizerPlugin extends Plugin {
                 $this->modifyPage($page);
             }
         }
+    }
+
+    /**
+     * Add the Admin Twig Extensions
+     */
+    public function onTwigExtensions() {
+        require_once __DIR__ . '/twig/TwigExtension.php';
+
+        $this->grav['twig']->twig->addExtension(new \EtdSeoOptimizerPluginTwigExtension);
     }
 
     /**
